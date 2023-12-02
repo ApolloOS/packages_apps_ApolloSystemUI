@@ -15,7 +15,7 @@
  * limitations under the License
  */
 
-package org.blissroms.systemui.qs.tiles
+package org.apollo.systemui.qs.tiles
 
 import android.content.ComponentName
 import android.content.Intent

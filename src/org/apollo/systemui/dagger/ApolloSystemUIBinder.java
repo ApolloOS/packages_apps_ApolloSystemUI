@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.blissroms.systemui.dagger;
+package org.apollo.systemui.dagger;
 
 import com.android.systemui.keyguard.dagger.KeyguardModule;
 import com.android.systemui.recents.RecentsModule;
@@ -20,5 +20,5 @@ import dagger.Module;
         CentralSurfacesModule.class,
         KeyguardModule.class,
 })
-public abstract class BlissSystemUIBinder {
+public abstract class ApolloSystemUIBinder {
 }

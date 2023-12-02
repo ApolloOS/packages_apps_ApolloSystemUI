@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.blissroms.systemui.dagger;
+package org.apollo.systemui.dagger;
 
 import static com.android.systemui.Dependency.ALLOW_NOTIFICATION_LONG_PRESS_NAME;
 import static com.android.systemui.Dependency.LEAK_REPORT_EMAIL_NAME;
@@ -65,8 +65,8 @@ import com.android.systemui.statusbar.policy.SensorPrivacyController;
 import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.volume.dagger.VolumeModule;
 
-import org.blissroms.systemui.qs.tileimpl.BlissQSFactoryImpl;
-import org.blissroms.systemui.qs.tileimpl.BlissQSModule;
+import org.apollo.systemui.qs.tileimpl.ApolloQSFactoryImpl;
+import org.apollo.systemui.qs.tileimpl.ApolloQSModule;
 
 import javax.inject.Named;
 
@@ -91,7 +91,7 @@ import dagger.Provides;
  */
 @Module(includes = {
         AospPolicyModule.class,
-        BlissQSModule.class,
+        ApolloQSModule.class,
         BatterySaverModule.class,
         GestureModule.class,
         MediaModule.class,
@@ -105,7 +105,7 @@ import dagger.Provides;
         StartCentralSurfacesModule.class,
         VolumeModule.class
 })
-public abstract class BlissSystemUIModule {
+public abstract class ApolloSystemUIModule {
 
     @SysUISingleton
     @Provides
@@ -140,7 +140,7 @@ public abstract class BlissSystemUIModule {
     /** */
     @Binds
     @SysUISingleton
-    public abstract QSFactory bindQSFactory(BlissQSFactoryImpl qsFactoryImpl);
+    public abstract QSFactory bindQSFactory(ApolloQSFactoryImpl qsFactoryImpl);
 
     @Binds
     abstract DockManager bindDockManager(DockManagerImpl dockManager);

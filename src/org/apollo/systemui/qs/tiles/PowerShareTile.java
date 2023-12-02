@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.blissroms.systemui.qs.tiles;
+package org.apollo.systemui.qs.tiles;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -219,7 +219,7 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
 
     @Override
     public int getMetricsCategory() {
-        return MetricsEvent.BLISSIFY;
+        return MetricsEvent.SPACESTATION;
     }
 
     @Override

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.blissroms.systemui.dagger;
+package org.apollo.systemui.dagger;
 
 import com.android.systemui.dagger.GlobalModule;
 import com.android.systemui.dagger.GlobalRootComponent;
@@ -15,13 +15,13 @@ import dagger.Component;
 
 @Singleton
 @Component(modules = {GlobalModule.class})
-public interface BlissGlobalRootComponent extends GlobalRootComponent {
+public interface ApolloGlobalRootComponent extends GlobalRootComponent {
 
     @Component.Builder
     interface Builder extends GlobalRootComponent.Builder {
-        BlissGlobalRootComponent build();
+        ApolloGlobalRootComponent build();
     }
 
     @Override
-    BlissSysUIComponent.Builder getSysUIComponent();
+    ApolloSysUIComponent.Builder getSysUIComponent();
 }

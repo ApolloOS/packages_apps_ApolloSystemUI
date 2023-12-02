@@ -7,7 +7,7 @@
 
     <!-- SystemUIFactory component -->
     <string name="config_systemUIFactoryComponent" translatable="false">
-        org.blissroms.systemui.BlissSystemUIInitializer
+        org.apollo.systemui.ApolloSystemUIInitializer
     </string>
 
     <!-- Tiles native to System UI. Order should match "quick_settings_tiles_default" -->

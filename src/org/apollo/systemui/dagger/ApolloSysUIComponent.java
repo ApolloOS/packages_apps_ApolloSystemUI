@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.blissroms.systemui.dagger;
+package org.apollo.systemui.dagger;
 
 import com.android.systemui.dagger.DefaultComponentBinder;
 import com.android.systemui.dagger.DependencyProvider;
@@ -17,7 +17,7 @@ import com.android.systemui.keyguard.CustomizationProvider;
 import com.android.systemui.statusbar.NotificationInsetsModule;
 import com.android.systemui.statusbar.QsFrameTranslateModule;
 
-import org.blissroms.systemui.dagger.BlissSystemUIBinder;
+import org.apollo.systemui.dagger.ApolloSystemUIBinder;
 
 import dagger.Subcomponent;
 
@@ -29,13 +29,13 @@ import dagger.Subcomponent;
         QsFrameTranslateModule.class,
         SystemUIModule.class,
         SystemUICoreStartableModule.class,
-        BlissSystemUIModule.class,
-	BlissSystemUIBinder.class})
-public interface BlissSysUIComponent extends SysUIComponent {
+        ApolloSystemUIModule.class,
+	ApolloSystemUIBinder.class})
+public interface ApolloSysUIComponent extends SysUIComponent {
     @SysUISingleton
     @Subcomponent.Builder
     interface Builder extends SysUIComponent.Builder {
-        BlissSysUIComponent build();
+        ApolloSysUIComponent build();
     }
 
     /**

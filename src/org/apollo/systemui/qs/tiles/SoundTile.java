@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.blissroms.systemui.qs.tiles;
+package org.apollo.systemui.qs.tiles;
 
 import static com.android.internal.logging.MetricsLogger.VIEW_UNKNOWN;
 

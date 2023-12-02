@@ -15,44 +15,47 @@
  * limitations under the License.
  */
 
-package org.blissroms.systemui.qs.tiles;
+package org.apollo.systemui.qs.tiles;
 
 import static com.android.internal.logging.MetricsLogger.VIEW_UNKNOWN;
 
-import android.content.Context;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SyncStatusObserver;
 import android.os.Handler;
 import android.os.Looper;
-import android.media.AudioManager;
 import android.service.quicksettings.Tile;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.android.internal.logging.MetricsLogger;
-import com.android.systemui.plugins.qs.QSTile.BooleanState;
-import com.android.systemui.qs.QsEventLogger;
-import com.android.systemui.qs.QSHost;
-import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.R;
-
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.FalsingManager;
+import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
+import com.android.systemui.qs.QsEventLogger;
+import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.logging.QSLogger;
+import com.android.systemui.qs.tileimpl.QSTileImpl;
 
 import javax.inject.Inject;
 
-public class VolumeTile extends QSTileImpl<BooleanState> {
+/** Quick settings tile: Sync **/
+public class SyncTile extends QSTileImpl<BooleanState> {
 
-    public static final String TILE_SPEC = "volume_panel";
+    public static final String TILE_SPEC = "sync";
 
-    private static final Intent SOUND_SETTINGS = new Intent("android.settings.SOUND_SETTINGS");
+    private final Icon mIcon = ResourceIcon.get(R.drawable.ic_qs_sync);
+
+    private Object mSyncObserverHandle = null;
+    private boolean mListening;
 
     @Inject
-    public VolumeTile(
+    public SyncTile(
             QsEventLogger qsEventLogger,
             QSHost host,
             @Background Looper backgroundLooper,
@@ -68,26 +71,42 @@ public class VolumeTile extends QSTileImpl<BooleanState> {
     }
 
     @Override
+    public BooleanState newTileState() {
+        return new BooleanState();
+    }
+
+    @Override
     protected void handleClick(@Nullable View view) {
-        AudioManager am = mContext.getSystemService(AudioManager.class);
-        am.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
+        ContentResolver.setMasterSyncAutomatically(!mState.value);
+        refreshState();
     }
 
     @Override
     public Intent getLongClickIntent() {
-        return SOUND_SETTINGS;
+        Intent intent = new Intent("android.settings.SYNC_SETTINGS");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        return intent;
     }
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
-        state.label = mContext.getString(R.string.quick_settings_volume_panel_label);
-        state.icon = ResourceIcon.get(R.drawable.ic_qs_volume_panel); // TODO needs own icon
-        state.state = Tile.STATE_ACTIVE;
+        state.value = ContentResolver.getMasterSyncAutomatically();
+        state.label = mContext.getString(R.string.quick_settings_sync_label);
+        state.icon = mIcon;
+        if (state.value) {
+            state.contentDescription =  mContext.getString(
+                    R.string.accessibility_quick_settings_sync_on);
+            state.state = Tile.STATE_ACTIVE;
+        } else {
+            state.contentDescription =  mContext.getString(
+                    R.string.accessibility_quick_settings_sync_off);
+            state.state = Tile.STATE_INACTIVE;
+        }
     }
 
     @Override
     public CharSequence getTileLabel() {
-        return mContext.getString(R.string.quick_settings_volume_panel_label);
+        return mContext.getString(R.string.quick_settings_sync_label);
     }
 
     @Override
@@ -96,12 +115,27 @@ public class VolumeTile extends QSTileImpl<BooleanState> {
     }
 
     @Override
-    public BooleanState newTileState() {
-        return new BooleanState();
+    public void handleSetListening(boolean listening) {
+        if (mListening == listening) return;
+        mListening = listening;
+
+        if (listening) {
+            mSyncObserverHandle = ContentResolver.addStatusChangeListener(
+                    ContentResolver.SYNC_OBSERVER_TYPE_SETTINGS, mSyncObserver);
+        } else {
+            ContentResolver.removeStatusChangeListener(mSyncObserverHandle);
+            mSyncObserverHandle = null;
+        }
     }
 
-    @Override
-    public void handleSetListening(boolean listening) {
-        // Do nothing
-    }
+    private SyncStatusObserver mSyncObserver = new SyncStatusObserver() {
+        public void onStatusChanged(int which) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshState();
+                }
+            });
+        }
+    };
 }

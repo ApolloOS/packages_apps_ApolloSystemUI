@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015 The CyanogenMod Project
- * Copyright (C) 2017 The LineageOS Project
+ * Copyright (C) 2018-2020 The LineageOS Project
+ * Copyright (C) 2023 BlissRoms Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,11 @@
  * limitations under the License.
  */
 
-package org.blissroms.systemui.qs.tiles;
+package org.apollo.systemui.qs.tiles;
 
 import static com.android.internal.logging.MetricsLogger.VIEW_UNKNOWN;
 
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.SyncStatusObserver;
 import android.os.Handler;
 import android.os.Looper;
 import android.service.quicksettings.Tile;
@@ -37,27 +35,31 @@ import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
-import com.android.systemui.qs.QsEventLogger;
 import com.android.systemui.qs.QSHost;
+import com.android.systemui.qs.QsEventLogger;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 
+import com.android.internal.util.apollo.PackageManagerUtils;
+
+import com.android.internal.apollo.hardware.LineageHardwareManager;
+
 import javax.inject.Inject;
 
-/** Quick settings tile: Sync **/
-public class SyncTile extends QSTileImpl<BooleanState> {
+public class ReadingModeTile extends QSTileImpl<BooleanState> {
 
-    public static final String TILE_SPEC = "sync";
+    public static final String TILE_SPEC = "reading_mode";
 
-    private final Icon mIcon = ResourceIcon.get(R.drawable.ic_qs_sync);
+    private final Icon mIcon = ResourceIcon.get(R.drawable.ic_qs_reader);
 
-    private Object mSyncObserverHandle = null;
-    private boolean mListening;
+    private static final Intent DISPLAY_SETTINGS = new Intent("android.settings.DISPLAY_SETTINGS");
+
+    private LineageHardwareManager mHardware;
 
     @Inject
-    public SyncTile(
-            QsEventLogger qsEventLogger,
+    public ReadingModeTile(
             QSHost host,
+            QsEventLogger uiEventLogger,
             @Background Looper backgroundLooper,
             @Main Handler mainHandler,
             FalsingManager falsingManager,
@@ -66,8 +68,9 @@ public class SyncTile extends QSTileImpl<BooleanState> {
             ActivityStarter activityStarter,
             QSLogger qsLogger
     ) {
-        super(host, qsEventLogger, backgroundLooper, mainHandler, falsingManager, metricsLogger,
+        super(host, uiEventLogger, backgroundLooper, mainHandler, falsingManager, metricsLogger,
                 statusBarStateController, activityStarter, qsLogger);
+        mHardware = LineageHardwareManager.getInstance(mContext);
     }
 
     @Override
@@ -77,36 +80,40 @@ public class SyncTile extends QSTileImpl<BooleanState> {
 
     @Override
     protected void handleClick(@Nullable View view) {
-        ContentResolver.setMasterSyncAutomatically(!mState.value);
+        boolean newStatus = !isReadingModeEnabled();
+        mHardware.set(LineageHardwareManager.FEATURE_READING_ENHANCEMENT, newStatus);
         refreshState();
     }
 
     @Override
     public Intent getLongClickIntent() {
-        Intent intent = new Intent("android.settings.SYNC_SETTINGS");
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        return intent;
+        return DISPLAY_SETTINGS;
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return mHardware.isSupported(LineageHardwareManager.FEATURE_READING_ENHANCEMENT);
     }
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
-        state.value = ContentResolver.getMasterSyncAutomatically();
-        state.label = mContext.getString(R.string.quick_settings_sync_label);
+        state.value = isReadingModeEnabled();
         state.icon = mIcon;
         if (state.value) {
-            state.contentDescription =  mContext.getString(
-                    R.string.accessibility_quick_settings_sync_on);
+            state.contentDescription = mContext.getString(
+                    R.string.accessibility_quick_settings_reading_mode_on);
             state.state = Tile.STATE_ACTIVE;
         } else {
-            state.contentDescription =  mContext.getString(
-                    R.string.accessibility_quick_settings_sync_off);
+            state.contentDescription = mContext.getString(
+                    R.string.accessibility_quick_settings_reading_mode_off);
             state.state = Tile.STATE_INACTIVE;
         }
+        state.label = getTileLabel();
     }
 
     @Override
     public CharSequence getTileLabel() {
-        return mContext.getString(R.string.quick_settings_sync_label);
+        return mContext.getString(R.string.quick_settings_reading_mode);
     }
 
     @Override
@@ -116,26 +123,10 @@ public class SyncTile extends QSTileImpl<BooleanState> {
 
     @Override
     public void handleSetListening(boolean listening) {
-        if (mListening == listening) return;
-        mListening = listening;
-
-        if (listening) {
-            mSyncObserverHandle = ContentResolver.addStatusChangeListener(
-                    ContentResolver.SYNC_OBSERVER_TYPE_SETTINGS, mSyncObserver);
-        } else {
-            ContentResolver.removeStatusChangeListener(mSyncObserverHandle);
-            mSyncObserverHandle = null;
-        }
+        // Do nothing
     }
 
-    private SyncStatusObserver mSyncObserver = new SyncStatusObserver() {
-        public void onStatusChanged(int which) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    refreshState();
-                }
-            });
-        }
-    };
+    private boolean isReadingModeEnabled() {
+        return mHardware.get(LineageHardwareManager.FEATURE_READING_ENHANCEMENT);
+    }
 }

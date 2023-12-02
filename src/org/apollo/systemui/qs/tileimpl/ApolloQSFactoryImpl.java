@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-package org.blissroms.systemui.qs.tileimpl;
+package org.apollo.systemui.qs.tileimpl;
 
 import androidx.annotation.Nullable;
 
@@ -33,10 +33,10 @@ import dagger.Lazy;
  * module to the SystemUI dagger graph by including it in an appropriate module.
  */
 @SysUISingleton
-public class BlissQSFactoryImpl extends QSFactoryImpl {
+public class ApolloQSFactoryImpl extends QSFactoryImpl {
 
     @Inject
-    public BlissQSFactoryImpl(
+    public ApolloQSFactoryImpl(
             Lazy<QSHost> qsHostLazy,
             Provider<CustomTile.Builder> customTileBuilderProvider,
             Map<String, Provider<QSTileImpl<?>>> tileMap) {

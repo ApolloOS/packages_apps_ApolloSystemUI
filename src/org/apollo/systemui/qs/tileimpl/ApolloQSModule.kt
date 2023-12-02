@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.blissroms.systemui.qs.tileimpl
+package org.apollo.systemui.qs.tileimpl
 
 import com.android.systemui.qs.tileimpl.QSTileImpl
 
-import org.blissroms.systemui.qs.tiles.AODTile
-import org.blissroms.systemui.qs.tiles.CaffeineTile
-import org.blissroms.systemui.qs.tiles.HeadsUpTile
-import org.blissroms.systemui.qs.tiles.SyncTile
-import org.blissroms.systemui.qs.tiles.UsbTetherTile
-import org.blissroms.systemui.qs.tiles.SoundTile
-import org.blissroms.systemui.qs.tiles.RefreshRateTile
-import org.blissroms.systemui.qs.tiles.VolumeTile
-import org.blissroms.systemui.qs.tiles.AmbientDisplayTile
-import org.blissroms.systemui.qs.tiles.PowerShareTile
-import org.blissroms.systemui.qs.tiles.ReadingModeTile
+import org.apollo.systemui.qs.tiles.AODTile
+import org.apollo.systemui.qs.tiles.CaffeineTile
+import org.apollo.systemui.qs.tiles.HeadsUpTile
+import org.apollo.systemui.qs.tiles.SyncTile
+import org.apollo.systemui.qs.tiles.UsbTetherTile
+import org.apollo.systemui.qs.tiles.SoundTile
+import org.apollo.systemui.qs.tiles.RefreshRateTile
+import org.apollo.systemui.qs.tiles.VolumeTile
+import org.apollo.systemui.qs.tiles.AmbientDisplayTile
+import org.apollo.systemui.qs.tiles.PowerShareTile
+import org.apollo.systemui.qs.tiles.ReadingModeTile
 
 import dagger.Binds
 import dagger.Module
@@ -36,7 +36,7 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
 @Module
-interface BlissQSModule {
+interface ApolloQSModule {
 
     /** Inject AODTile into tileMap in QSModule */
     @Binds
