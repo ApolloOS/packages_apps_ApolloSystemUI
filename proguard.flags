@@ -1,4 +1,9 @@
--include ../../../frameworks/base/packages/SystemUI/proguard.flags
+-include ../../../frameworks/base/packages/SystemUI/proguard_common.flags
 
 # Proguard rules not owned by core SystemUI
--keep class org.apollo.** { *; }
+-keep class org.apollo.systemui.** { *; }
+
+-keep,allowoptimization,allowaccessmodification class org.apollo.systemui.dagger.DaggerApolloGlobalRootComponent** { !synthetic *; }
+
+# TODO(b/284411203) delete this
+-keep,allowoptimization,allowaccessmodification class com.android.systemui.dagger.DaggerReferenceGlobalRootComponent** { !synthetic *; }

@@ -29,15 +29,13 @@ import com.android.systemui.plugins.qs.QSFactory;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.power.dagger.PowerModule;
 import com.android.systemui.qs.dagger.QSModule;
+import com.android.systemui.qs.tileimpl.QSFactoryImpl;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.RecentsImplementation;
 import com.android.systemui.rotationlock.RotationLockModule;
-import com.android.systemui.scene.SceneContainerFrameworkModule;
 import com.android.systemui.screenshot.ReferenceScreenshotModule;
 import com.android.systemui.settings.dagger.MultiUserUtilsModule;
 import com.android.systemui.shade.NotificationShadeWindowControllerImpl;
-import com.android.systemui.shade.ShadeController;
-import com.android.systemui.shade.ShadeControllerImpl;
 import com.android.systemui.shade.ShadeExpansionStateManager;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.KeyboardShortcutsModule;
@@ -64,8 +62,8 @@ import com.android.systemui.statusbar.policy.IndividualSensorPrivacyControllerIm
 import com.android.systemui.statusbar.policy.SensorPrivacyController;
 import com.android.systemui.statusbar.policy.SensorPrivacyControllerImpl;
 import com.android.systemui.volume.dagger.VolumeModule;
+import com.android.systemui.wallpapers.dagger.WallpaperModule;
 
-import org.apollo.systemui.qs.tileimpl.ApolloQSFactoryImpl;
 import org.apollo.systemui.qs.tileimpl.ApolloQSModule;
 
 import javax.inject.Named;
@@ -91,7 +89,6 @@ import dagger.Provides;
  */
 @Module(includes = {
         AospPolicyModule.class,
-        ApolloQSModule.class,
         BatterySaverModule.class,
         GestureModule.class,
         MediaModule.class,
@@ -100,10 +97,13 @@ import dagger.Provides;
         QSModule.class,
         ReferenceScreenshotModule.class,
         RotationLockModule.class,
-        SceneContainerFrameworkModule.class,
         StatusBarEventsModule.class,
         StartCentralSurfacesModule.class,
-        VolumeModule.class
+        VolumeModule.class,
+        VolumeModule.class,
+        WallpaperModule.class,
+        KeyboardShortcutsModule.class,
+        ApolloQSModule.class
 })
 public abstract class ApolloSystemUIModule {
 
@@ -140,13 +140,10 @@ public abstract class ApolloSystemUIModule {
     /** */
     @Binds
     @SysUISingleton
-    public abstract QSFactory bindQSFactory(ApolloQSFactoryImpl qsFactoryImpl);
+    public abstract QSFactory bindQSFactory(QSFactoryImpl qsFactoryImpl);
 
     @Binds
     abstract DockManager bindDockManager(DockManagerImpl dockManager);
-
-    @Binds
-    abstract ShadeController provideShadeController(ShadeControllerImpl shadeController);
 
     @SysUISingleton
     @Provides

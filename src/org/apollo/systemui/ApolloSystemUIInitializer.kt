@@ -7,18 +7,13 @@
 package org.apollo.systemui
 
 import android.content.Context
-import android.util.Log
-import com.android.systemui.SystemUIInitializer
-import com.android.systemui.dagger.GlobalRootComponent
+
 import org.apollo.systemui.dagger.DaggerApolloGlobalRootComponent
 
+import com.android.systemui.SystemUIInitializer
+import com.android.systemui.dagger.GlobalRootComponent
+
 class ApolloSystemUIInitializer(context: Context) : SystemUIInitializer(context) {
-
-    private val TAG = "ApolloSystemUIInitializer"
-
-    init {
-        Log.d(TAG, "ApolloSystemUIInitializer initialized")
-    }
 
     override fun getGlobalRootComponentBuilder(): GlobalRootComponent.Builder {
         return DaggerApolloGlobalRootComponent.builder()

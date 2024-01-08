@@ -17,6 +17,9 @@ import dagger.Component;
 @Component(modules = {GlobalModule.class})
 public interface ApolloGlobalRootComponent extends GlobalRootComponent {
 
+    /**
+     * Builder for ApolloGlobalRootComponent
+     */
     @Component.Builder
     interface Builder extends GlobalRootComponent.Builder {
         ApolloGlobalRootComponent build();
